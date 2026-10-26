@@ -1,0 +1,16 @@
+# progress-configmap.yaml
+# Purpose: Record that one student finished one exercise.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: progress-${EXERCISE_ID}
+  namespace: ${WORKSHOP_NAMESPACE}
+  labels:
+    workshop.redhat.com/progress: "true"
+    workshop.redhat.com/workshop: openshift-app-basics
+    workshop.redhat.com/exercise: ${EXERCISE_ID}
+    app.kubernetes.io/part-of: openshift-app-basics
+data:
+  user: ${WORKSHOP_USER}
+  exercise: ${EXERCISE_ID}
+  status: done

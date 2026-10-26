@@ -1,0 +1,17 @@
+# gitops-appproject.yaml
+# Purpose: Allow student namespaces to host Application resources.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workshop
+  namespace: openshift-gitops
+  labels:
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  sourceNamespaces:
+    - student-*
+  sourceRepos:
+    - "*"
+  destinations:
+    - namespace: student-*
+      server: https://kubernetes.default.svc

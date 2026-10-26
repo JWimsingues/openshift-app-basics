@@ -1,0 +1,50 @@
+# 00-student-namespace.yaml
+# Purpose: Create one namespace, quota, and admin binding for one student.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${WORKSHOP_NAMESPACE}
+  labels:
+    app.kubernetes.io/part-of: openshift-app-basics
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: student-quota
+  namespace: ${WORKSHOP_NAMESPACE}
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: student-limits
+  namespace: ${WORKSHOP_NAMESPACE}
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 200m
+        memory: 256Mi
+      defaultRequest:
+        cpu: 50m
+        memory: 64Mi
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: student-admin
+  namespace: ${WORKSHOP_NAMESPACE}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+  - kind: User
+    apiGroup: rbac.authorization.k8s.io
+    name: ${WORKSHOP_USER}

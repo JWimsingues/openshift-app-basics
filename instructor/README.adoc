@@ -1,0 +1,78 @@
+= Instructor progress
+
+This page is for the instructor. Students do not need it.
+Do not add this page to the student navigation.
+
+The workshop uses one shared cluster.
+Each student id looks like `student-01`.
+The namespace name is the same value.
+Students are not cluster-admin.
+
+== Before session 1
+
+. Install Red Hat OpenShift GitOps 1.13 or later.
+. Allow Applications in student namespaces.
++
+This command sets `spec.sourceNamespaces` to `student-*`.
+A merge patch replaces that list.
++
+[source,bash]
+----
+oc patch argocd openshift-gitops -n openshift-gitops --context cluster --type merge -p '{"spec":{"sourceNamespaces":["student-*"]}}'
+----
+. Create the AppProject.
++
+[source,bash]
+----
+oc apply --context cluster -f instructor/gitops-appproject.yaml
+----
+. Create one namespace per student.
++
+Set `WORKSHOP_USER` and `WORKSHOP_NAMESPACE` to the same student id.
+Then run:
++
+[source,bash]
+----
+export WORKSHOP_USER=student-01
+export WORKSHOP_NAMESPACE="${WORKSHOP_USER}"
+envsubst < instructor/00-student-namespace.yaml | oc apply --context cluster -f -
+----
+. Publish this repository so the cluster can read it.
++
+Tell students the apps domain, the Git URL, and the Git branch.
+They store those values in `myenv.sh`.
+. Give each student a user that matches `WORKSHOP_USER`.
++
+The RoleBinding grants `admin` in that namespace only.
+
+See link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_applications/managing-apps-in-non-control-plane-namespaces[Managing applications in non-control plane namespaces].
+
+== Shared cluster progress
+
+Each exercise writes a ConfigMap in the student namespace.
+The label is `workshop.redhat.com/progress=true`.
+Students cannot list other namespaces.
+
+Run this command from a machine that is logged in as cluster-admin:
+
+[source,bash]
+----
+chmod +x instructor/progress.sh
+./instructor/progress.sh
+----
+
+== What you should see
+
+A table with one row per student and one column per exercise.
+`done` means the student recorded that exercise.
+`-` means they did not.
+
+[source,bash]
+----
+USER        00-setup    01-pods    02-deploy    03-ingress    04-config    05-resources    06-gitops
+student-01  done        done       done         -             -            -               -
+student-02  done        -          -            -             -            -               -
+----
+
+This workshop does not use `TENANCY=dedicated`.
+`instructor/contexts.example` is unused on a shared cluster.

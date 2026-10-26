@@ -1,0 +1,5 @@
+# One OpenShift context per student cluster.
+# This workshop uses a shared cluster. You do not need this file.
+# Lines that start with # are ignored.
+# student-01
+# student-02
