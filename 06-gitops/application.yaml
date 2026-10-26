@@ -1,0 +1,23 @@
+# application.yaml
+# Purpose: Ask OpenShift GitOps to sync gitops/ into the student namespace.
+# Apply with envsubst. The file contains ${GIT_REPO_URL}, ${GIT_REVISION}, and ${WORKSHOP_NAMESPACE}.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: workshop-web
+  namespace: ${WORKSHOP_NAMESPACE}
+  labels:
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  project: workshop
+  source:
+    repoURL: ${GIT_REPO_URL}
+    targetRevision: ${GIT_REVISION}
+    path: gitops
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${WORKSHOP_NAMESPACE}
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true

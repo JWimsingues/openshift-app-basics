@@ -1,0 +1,47 @@
+# multi-container-pod.yaml
+# Purpose: Run httpd and a sidecar that share one volume.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  terminationGracePeriodSeconds: 5
+  containers:
+    - name: httpd
+      image: registry.access.redhat.com/ubi9/httpd-24
+      ports:
+        - containerPort: 8080
+          name: http
+      volumeMounts:
+        - name: web
+          mountPath: /var/www/html
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+    - name: sidecar
+      image: registry.access.redhat.com/ubi9/ubi
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          echo "Hello from the sidecar" > /data/index.html
+          sleep infinity
+      volumeMounts:
+        - name: web
+          mountPath: /data
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+  volumes:
+    - name: web
+      emptyDir: {}

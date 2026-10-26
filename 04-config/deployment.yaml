@@ -1,0 +1,47 @@
+# deployment.yaml
+# Purpose: Mount the ConfigMap and the Secret into the web container.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: workshop-web
+  template:
+    metadata:
+      labels:
+        app: workshop-web
+        app.kubernetes.io/part-of: openshift-app-basics
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: httpd
+          image: registry.access.redhat.com/ubi9/httpd-24
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: page
+              mountPath: /var/www/html
+            - name: token
+              mountPath: /etc/workshop
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: page
+          configMap:
+            name: workshop-web-page
+        - name: token
+          secret:
+            secretName: workshop-web-token

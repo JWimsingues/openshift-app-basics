@@ -1,0 +1,16 @@
+# service.yaml
+# Purpose: Give the Deployment a stable address inside the cluster. GitOps syncs this file.
+apiVersion: v1
+kind: Service
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  selector:
+    app: workshop-web
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

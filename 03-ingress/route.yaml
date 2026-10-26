@@ -1,0 +1,15 @@
+# route.yaml
+# Purpose: Publish the Service with an OpenShift Route.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  to:
+    kind: Service
+    name: workshop-web
+  port:
+    targetPort: http

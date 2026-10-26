@@ -1,0 +1,24 @@
+# pod.yaml
+# Purpose: Run one httpd container so you can see a Pod.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+spec:
+  terminationGracePeriodSeconds: 5
+  containers:
+    - name: httpd
+      image: registry.access.redhat.com/ubi9/httpd-24
+      ports:
+        - containerPort: 8080
+          name: http
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi

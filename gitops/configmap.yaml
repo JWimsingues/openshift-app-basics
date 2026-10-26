@@ -1,0 +1,12 @@
+# configmap.yaml
+# Purpose: Store the HTML page outside the container image. GitOps syncs this file.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workshop-web-page
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+data:
+  index.html: |
+    <html><body><h1>Hello from the ConfigMap</h1></body></html>

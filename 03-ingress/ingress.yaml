@@ -1,0 +1,24 @@
+# ingress.yaml
+# Purpose: Publish the Service with a Kubernetes Ingress.
+# Apply with envsubst. The file contains ${WORKSHOP_NAMESPACE} and ${APPS_DOMAIN}.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: workshop-web
+  labels:
+    app: workshop-web
+    app.kubernetes.io/part-of: openshift-app-basics
+  annotations:
+    route.openshift.io/termination: edge
+spec:
+  rules:
+    - host: workshop-web-${WORKSHOP_NAMESPACE}.${APPS_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: workshop-web
+                port:
+                  number: 8080
