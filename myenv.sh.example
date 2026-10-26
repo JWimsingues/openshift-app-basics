@@ -1,0 +1,21 @@
+# Copy this file to myenv.sh and fill in the values.
+# myenv.sh is gitignored. It holds your password.
+
+# Console URL (for the browser, not for scripts)
+# https://console-openshift-console.apps.<cluster-domain>
+
+# Workshop variables (envsubst reads these)
+export WORKSHOP_USER="student-01"
+# Shared cluster: the namespace name is the student id.
+export WORKSHOP_NAMESPACE="${WORKSHOP_USER}"
+export APPS_DOMAIN="apps.<cluster-domain>"
+export GIT_REPO_URL="https://github.com/JWimsingues/openshift-app-basics.git"
+export GIT_REVISION="main"
+export CLUSTER_API_URL="https://api.<cluster-domain>:6443"
+
+# Context cleanup (safe to run more than once)
+oc config delete-context cluster 2>/dev/null
+
+# Login and rename the context
+oc login "$CLUSTER_API_URL" --username <user> --password <password>
+oc config rename-context "$(oc config current-context)" cluster

@@ -1,0 +1,72 @@
+= OpenShift application basics
+
+Students learn how OpenShift runs an application.
+The same web app grows from a Pod to an Argo CD Application.
+The cluster is shared. Each student uses one namespace.
+
+== View the Course
+
+The full course is published at: https://jwimsingues.github.io/openshift-app-basics
+
+== Sessions
+
+Three sessions. About 2 hours 15 minutes to 2 hours 30 minutes each.
+
+. Session 1: setup, Kubernetes and OpenShift, containers, images, and Pods.
+. Session 2: Deployments, Services, Ingress, Routes, ConfigMaps, and Secrets.
+. Session 3: requests, limits, probes, and an Argo CD Application.
+
+== Local Development
+
+To preview the course site locally:
+
+[source,bash]
+----
+npm install
+npm run dev
+----
+
+This starts a live-reload server at http://localhost:3000.
+
+== Build the Site
+
+[source,bash]
+----
+npx antora site.yml
+----
+
+The generated site is output to `gh-pages/`.
+
+== Repository Structure
+
+[cols="2,4",options="header"]
+|===
+| Directory | Purpose
+
+| `documentation/`
+| Antora courseware source (AsciiDoc pages, navigation, attributes)
+
+| `01-pods/`
+| Pod manifests for Lab 1
+
+| `02-deploy/`
+| Deployment and Service for Lab 2
+
+| `03-ingress/`
+| Ingress and Route for Lab 3
+
+| `04-config/`
+| ConfigMap, Secret, and Deployment for Lab 4
+
+| `05-resources/`
+| Deployment with requests, limits, and probes for Lab 5
+
+| `06-gitops/`
+| Argo CD Application for Lab 6
+
+| `gitops/`
+| Manifests that OpenShift GitOps syncs
+
+| `instructor/`
+| Instructor progress view and shared-cluster setup. Not part of the student navigation.
+|===
