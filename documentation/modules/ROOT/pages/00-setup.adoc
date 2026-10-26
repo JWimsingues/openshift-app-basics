@@ -1,0 +1,281 @@
+= Cluster setup
+:page-time: 15
+include::_attributes.adoc[]
+
+Time: 15 minutes.
+
+You log in to the shared cluster and confirm your namespace.
+Later labs use the variables you export here.
+
+[#prerequisites]
+== Prerequisites
+
+* `oc` from OpenShift {ocp-version}
+* `git`
+* `envsubst` from the `gettext` package
+* `curl`
+* A student id that looks like `student-01`
+* The instructor already created your namespace, quota, and RoleBinding
+* The instructor already installed OpenShift GitOps {gitops-version}
+
+[#tenancy]
+== Tenancy
+
+This workshop uses a shared cluster.
+Many students use one cluster.
+You are not `cluster-admin`.
+
+Your namespace name is your student id.
+You can create objects only in that namespace.
+The instructor installed OpenShift GitOps once for the whole cluster.
+You create an Application in your namespace in the last lab.
+
+[#login-clusters]
+== 1. Log in
+
+*What:* Create `myenv.sh`, log in, and name the context `cluster`.
+
+*Why:* Every later command uses `--context cluster`.
+
+Use one of the two options.
+
+=== Option A - Pre-provisioned cluster
+
+The instructor created your user and your namespace.
+
+. Copy `myenv.sh.example` to `myenv.sh`.
+. Set `WORKSHOP_USER` to your student id.
+. Set `APPS_DOMAIN`, `GIT_REPO_URL`, `GIT_REVISION`, and `CLUSTER_API_URL` to the values from the instructor.
+. Set the user and password in the `oc login` line.
+. Run `source myenv.sh`.
+
+=== Option B - Quick login
+
+Someone else already filled in `myenv.sh`.
+
+. Run `source myenv.sh`.
+. Do not change the context name. It must stay `cluster`.
+
+NOTE: `myenv.sh` contains your password. Do not commit it. The file is listed in `.gitignore`.
+
+.Verify: The context name is cluster
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc whoami --context cluster
+oc config current-context
+----
+
+[.console-output]
+[source,bash]
+----
+student-01
+cluster
+----
+====
+
+'''
+
+[#export-variables]
+== 2. Export the workshop variables
+
+*What:* Export the variables that later files and commands read.
+
+*Why:* `envsubst` and `oc -n` fail if these variables are empty.
+
+`source myenv.sh` exports them. This table is the list you must set.
+
+[cols="2,2,4",options="header"]
+|===
+| Variable | Used in | Description
+
+| `WORKSHOP_USER`
+| `instructor/progress-configmap.yaml` and the namespace RoleBinding
+| Student id, such as `student-01`
+
+| `WORKSHOP_NAMESPACE`
+| `oc -n` and the Application
+| Namespace for this student. Same value as `WORKSHOP_USER`
+
+| `APPS_DOMAIN`
+| `03-ingress/ingress.yaml`
+| Apps domain of the cluster, such as `apps.cluster.example.com`
+
+| `GIT_REPO_URL`
+| `06-gitops/application.yaml`
+| Git clone URL of this workshop repository
+
+| `GIT_REVISION`
+| `06-gitops/application.yaml`
+| Git branch that OpenShift GitOps reads. Use `main` unless the instructor says otherwise
+
+| `CLUSTER_API_URL`
+| `myenv.sh`
+| API URL for `oc login`
+|===
+
+.Verify: The variables are set
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+echo "${WORKSHOP_USER} ${WORKSHOP_NAMESPACE} ${APPS_DOMAIN}"
+----
+
+[.console-output]
+[source,bash]
+----
+student-01 student-01 apps.cluster.example.com
+----
+====
+
+'''
+
+[#clone]
+== 3. Clone the repository
+
+*What:* Clone this repository and change to its root directory.
+
+*Why:* The lab commands use paths such as `01-pods/pod.yaml`.
+
+[.console-input]
+[source,bash]
+----
+git clone "${GIT_REPO_URL}"
+cd openshift-app-basics
+----
+
+.Verify: The lab folders exist
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+ls 01-pods 02-deploy instructor
+----
+
+[.console-output]
+[source,bash]
+----
+01-pods:
+multi-container-pod.yaml
+pod.yaml
+
+02-deploy:
+deployment.yaml
+service.yaml
+
+instructor:
+00-student-namespace.yaml
+progress-configmap.yaml
+progress.sh
+----
+====
+
+'''
+
+== 4. Confirm your namespace and quota
+
+*What:* Read the namespace, the quota, and your access.
+
+*Why:* Later labs create Pods only in this namespace. The quota stops one student from using the whole cluster.
+
+[.console-input]
+[source,bash]
+----
+oc get namespace "${WORKSHOP_NAMESPACE}" --context cluster
+oc get resourcequota student-quota -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc auth can-i create pods -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: You can create Pods in your namespace
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+NAME         STATUS   AGE
+student-01   Active   1h
+
+NAME            AGE   REQUEST                          LIMIT
+student-quota   1h    pods: 0/10, requests.cpu: 0/1    limits.cpu: 0/2
+
+yes
+----
+====
+
+'''
+
+[#gitops-crd]
+== 5. Confirm the Application CRD
+
+*What:* Check that the cluster knows the Argo CD Application type.
+
+*Why:* Lab 6 creates an Application. You do not install the operator.
+
+icon:clock[] ~15 seconds
+
+[.console-input]
+[source,bash]
+----
+oc explain application.argoproj.io --context cluster
+----
+
+NOTE: You do not need permission in the `openshift-gitops` namespace.
+`oc explain` only checks that the custom resource exists.
+
+.Verify: The explain command prints the Application fields
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+KIND:     Application
+VERSION:  argoproj.io/v1alpha1
+----
+====
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/authentication_and_authorization/index[OpenShift authentication and authorization]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc[OpenShift CLI]
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to run oc whoami and see your namespace?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+A plain `oc apply -f` would store those tokens as literal text.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=00-setup
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-00-setup -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME               DATA   AGE
+progress-00-setup  3      5s
+----
+====

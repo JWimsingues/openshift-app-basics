@@ -1,0 +1,281 @@
+= Lab 1 - Pods: containers, images, and a sidecar
+:page-time: 75
+include::_attributes.adoc[]
+
+Time: 75 minutes.
+
+You compare Kubernetes with OpenShift.
+Then you run one container, inspect its image, and add a second container to the same Pod.
+
+== Prerequisites
+
+* xref:00-setup.adoc[Cluster setup] is complete
+* `oc whoami --context cluster` prints your student id
+* You are in the repository root
+
+== How it works
+
+A container is a running process from an image.
+A Pod is the smallest object OpenShift runs. It holds one or more containers.
+Containers in one Pod share the network and can share a volume.
+OpenShift schedules the Pod onto a node. You do not choose the node.
+
+== Steps to apply
+
+[#compare]
+=== 1. Compare Kubernetes and OpenShift
+
+*What:* Read the objects that both platforms share, and the objects OpenShift adds.
+
+*Why:* Later labs use Kubernetes objects and one OpenShift object, the Route.
+
+[cols="2,2,3",options="header"]
+|===
+| Topic | Kubernetes | OpenShift
+
+| Run a process
+| Pod
+| Pod
+
+| Keep it running
+| Deployment
+| Deployment
+
+| Address inside the cluster
+| Service
+| Service
+
+| Address outside the cluster
+| Ingress, after you install a controller
+| Ingress is included. Route is the native API
+
+| Isolation
+| Namespace
+| Project. A Project is a Namespace with OpenShift metadata
+
+| CLI
+| kubectl
+| oc. oc accepts kubectl commands
+
+| Default security
+| You choose the policy
+| Restricted by default
+|===
+
+.Verify: The cluster has the Route API
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc api-resources --api-group=route.openshift.io --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME          SHORTNAMES   APIVERSION                     NAMESPACED   KIND
+routes        route        route.openshift.io/v1          true         Route
+----
+====
+
+'''
+
+[#image]
+=== 2. Inspect the image
+
+*What:* Read the image name that the Pod will run.
+
+*Why:* The image is the file set. The container is the running copy.
+
+icon:clock[] ~15 seconds
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc image info {httpd-image} --context cluster
+----
+
+.Verify: The command prints the image name
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+Name:  registry.access.redhat.com/ubi9/httpd-24
+----
+====
+
+'''
+
+[#single-pod]
+=== 3. Run one container
+
+*What:* Create a Pod that runs only the httpd container.
+
+*Why:* You see the smallest object OpenShift can run before you add a second container.
+
+icon:clock[] ~1 minute (image pull)
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 01-pods/pod.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc wait --for=condition=Ready pod/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+----
+
+.Verify: The Pod is Ready
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME           READY   STATUS    RESTARTS   AGE
+workshop-web   1/1     Running   0          30s
+----
+====
+
+'''
+
+[#sidecar]
+=== 4. Add a sidecar
+
+*What:* Replace the Pod with two containers that share an emptyDir volume.
+
+*Why:* A sidecar can write a file that the web container serves. The Pod is still one object.
+
+A Pod spec does not update in place. Delete the Pod first.
+
+icon:clock[] ~1 minute (image pull for the sidecar)
+
+[.console-input]
+[source,bash]
+----
+oc delete pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --wait=true
+oc apply -f 01-pods/multi-container-pod.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc wait --for=condition=Ready pod/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+----
+
+The sidecar writes `Hello from the sidecar` into the shared volume.
+httpd serves that file.
+
+.Verify: Both containers are Ready and the file is shared
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc exec workshop-web -c httpd -n "${WORKSHOP_NAMESPACE}" --context cluster -- cat /var/www/html/index.html
+----
+
+[.console-output]
+[source,bash]
+----
+NAME           READY   STATUS    RESTARTS   AGE
+workshop-web   2/2     Running   0          40s
+Hello from the sidecar
+----
+====
+
+== What this solves (compared to a local process)
+
+[cols="2,3",options="header"]
+|===
+| Problem | How this lab solves it
+
+| A container on a laptop is not scheduled by the cluster
+| The Pod runs on a node that OpenShift selects
+
+| One container cannot share a disk with another process in the same unit
+| The sidecar and httpd mount the same emptyDir
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Addressed in
+
+| If you delete the Pod, nothing creates a new one
+| xref:02-deploy.adoc[Lab 2]
+
+| The Pod has no stable address
+| xref:02-deploy.adoc[Lab 2]
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods[Working with pods]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/architecture/index[OpenShift architecture]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| One Pod with two containers
+| Chosen. Both containers share the network and the volume.
+
+| Two Pods and a shared persistent volume
+| Works, but it adds storage that this lab does not need.
+
+| A process manager inside one container
+| Hides the second process from `oc get pod`.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to see the Pod report 2/2 Ready?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=01-pods
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-01-pods -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME              DATA   AGE
+progress-01-pods  3      5s
+----
+====
+
+'''
+
+== Reset
+
+Delete the Pod. The next lab creates a Deployment with the same name.
+The delete is one object, so order does not matter.
+
+[.console-input]
+[source,bash]
+----
+oc delete pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+----

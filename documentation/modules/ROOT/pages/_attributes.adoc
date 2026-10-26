@@ -1,0 +1,26 @@
+:experimental:
+:source-highlighter: highlightjs
+:title: OpenShift application basics
+:cluster-context: cluster
+:ocp-version: 4.16+
+:gitops-version: 1.13+
+:httpd-image: registry.access.redhat.com/ubi9/httpd-24
+:ubi-image: registry.access.redhat.com/ubi9/ubi
+
+++++
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+++++

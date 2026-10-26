@@ -1,0 +1,193 @@
+= Lab 3 - Ingress and Routes: publish the Service
+:page-time: 40
+include::_attributes.adoc[]
+
+Time: 40 minutes.
+
+You publish the Service outside the cluster.
+A Kubernetes Ingress names the host and the path.
+An OpenShift Route does the same job with the OpenShift API.
+This cluster already runs an ingress controller. You do not install one.
+
+== Prerequisites
+
+* xref:02-deploy.adoc[Lab 2] is complete
+* `APPS_DOMAIN` is set in your shell
+* You are in the repository root
+
+== How it works
+
+A Service is reachable only inside the cluster.
+An Ingress rule maps a host name to that Service.
+OpenShift accepts Ingress objects and also offers Route objects.
+The router watches both and creates the external URL.
+
+== Steps to apply
+
+[#ingress]
+=== 1. Create an Ingress
+
+*What:* Apply an Ingress for `workshop-web-${WORKSHOP_NAMESPACE}.${APPS_DOMAIN}`.
+
+*Why:* This is the Kubernetes object for HTTP entry. You see the same idea you use on a Kubernetes cluster.
+
+`03-ingress/ingress.yaml` contains `${WORKSHOP_NAMESPACE}` and `${APPS_DOMAIN}`.
+`envsubst` replaces them. A plain `oc apply -f` would keep the tokens as text.
+
+icon:clock[] ~15 seconds (the router admits the host)
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+envsubst < 03-ingress/ingress.yaml | oc apply -n "${WORKSHOP_NAMESPACE}" --context cluster -f -
+----
+
+NOTE: `curl -sk` skips TLS verification. A production client should trust the cluster CA instead.
+
+[.console-input]
+[source,bash]
+----
+curl -sk -o /dev/null -w "%{http_code}\n" "https://workshop-web-${WORKSHOP_NAMESPACE}.${APPS_DOMAIN}"
+----
+
+.Verify: The Ingress exists and returns HTTP 200
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get ingress workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME           CLASS   HOSTS                                      ADDRESS   PORTS
+workshop-web   <none>  workshop-web-student-01.apps.example.com             80
+200
+----
+====
+
+'''
+
+[#route]
+=== 2. Create a Route
+
+*What:* Apply a Route that targets the same Service. Do not set a host.
+
+*Why:* OpenShift assigns the host. Route is the native API and can add TLS options later.
+
+icon:clock[] ~15 seconds
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 03-ingress/route.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+HOST="$(oc get route workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster -o jsonpath='{.spec.host}')"
+echo "${HOST}"
+curl -sk -o /dev/null -w "%{http_code}\n" "https://${HOST}"
+----
+
+NOTE: `curl -sk` skips TLS verification. A production client should trust the cluster CA instead.
+
+.Verify: The Route host returns HTTP 200
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+workshop-web-student-01.apps.example.com
+200
+----
+====
+
+== What this solves (compared to Lab 2)
+
+[cols="2,3",options="header"]
+|===
+| Problem from Lab 2 | How this lab solves it
+
+| The Service is only inside the cluster
+| The Ingress and the Route publish it on an HTTPS host
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Addressed in
+
+| The page content is baked into the image
+| xref:04-config.adoc[Lab 4]
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/configuring-ingress[Configuring ingress]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/configuring-routes[Configuring routes]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| Ingress and Route
+| Chosen. Ingress matches the Kubernetes API. Route is the OpenShift API on this cluster.
+
+| Route only
+| Enough on OpenShift. You would not see the Kubernetes Ingress object.
+
+| A NodePort Service
+| Opens a port on every node. You do not get a host name.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to open the Route URL and get HTTP 200?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=03-ingress
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-03-ingress -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                  DATA   AGE
+progress-03-ingress   3      5s
+----
+====
+
+'''
+
+== Reset
+
+Delete the Route first, then the Ingress.
+The Service and the Deployment stay. Lab 2 still works after this reset.
+
+[.console-input]
+[source,bash]
+----
+oc delete route workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+oc delete ingress workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+----

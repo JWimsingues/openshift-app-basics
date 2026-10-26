@@ -1,0 +1,228 @@
+= Lab 2 - Deployments and Services: keep the app running
+:page-time: 50
+include::_attributes.adoc[]
+
+Time: 50 minutes.
+
+You replace the bare Pod with a Deployment and a Service.
+The Deployment starts a new Pod when you delete one.
+The Service keeps one address for both Pods.
+
+== Prerequisites
+
+* xref:01-pods.adoc[Lab 1] is complete
+* You are in the repository root
+
+== How it works
+
+A Deployment owns a ReplicaSet. The ReplicaSet owns the Pods.
+You set the replica count. The Deployment tries to keep that count.
+A Service selects Pods by label. Clients use the Service name, not the Pod IP.
+
+== Steps to apply
+
+[#deployment]
+=== 1. Create the Deployment
+
+*What:* Delete the bare Pod and apply a Deployment with two replicas.
+
+*Why:* A Deployment recreates Pods. A bare Pod does not.
+
+icon:clock[] ~1 minute (two Pods pull the image)
+
+[.console-input]
+[source,bash]
+----
+oc delete pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true
+oc apply -f 02-deploy/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: Two Pods are Ready
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-7d9c8b6f4d-abcde   1/1     Running   0          40s
+workshop-web-7d9c8b6f4d-fghij   1/1     Running   0          40s
+----
+====
+
+'''
+
+[#service]
+=== 2. Create the Service
+
+*What:* Apply a Service that selects `app=workshop-web` on port 8080.
+
+*Why:* Pod IPs change. The Service name `workshop-web` stays the same.
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 02-deploy/service.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: The Service has two endpoints
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get endpoints workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME           ENDPOINTS                         AGE
+workshop-web   10.128.0.10:8080,10.128.0.11:8080 10s
+----
+====
+
+'''
+
+[#replace-pod]
+=== 3. Replace a Pod and send requests
+
+*What:* Delete one Pod, then send two requests through the Service.
+
+*Why:* You prove the Deployment creates a replacement and the Service still answers.
+
+`oc port-forward` blocks. Open a second terminal for `curl`, or stop the forward with Ctrl-C after the two requests.
+
+[.console-input]
+[source,bash]
+----
+oc delete pod -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --wait=true
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc port-forward svc/workshop-web 8080:8080 -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+In the second terminal:
+
+[.console-input]
+[source,bash]
+----
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080
+----
+
+.Verify: New Pods exist and both requests return 200
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-7d9c8b6f4d-klmno   1/1     Running   0          20s
+workshop-web-7d9c8b6f4d-pqrst   1/1     Running   0          20s
+200
+200
+----
+====
+
+== What this solves (compared to Lab 1)
+
+[cols="2,3",options="header"]
+|===
+| Problem from Lab 1 | How this lab solves it
+
+| A deleted Pod stays gone
+| The Deployment starts a new Pod
+
+| Clients must know a Pod IP
+| The Service selects Pods by label
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Addressed in
+
+| Users outside the cluster cannot open the Service
+| xref:03-ingress.adoc[Lab 3]
+
+| The page is still the image default
+| xref:04-config.adoc[Lab 4]
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/building_applications/deployments[Deployments]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/understanding-networking[Services]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| Deployment and Service
+| Chosen. The Deployment keeps the replica count. The Service hides Pod IPs.
+
+| A bare Pod and a Service
+| The Service works until the Pod is deleted. Nothing recreates the Pod.
+
+| A StatefulSet
+| Useful for stable network names and storage. This web app does not need that.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to delete a Pod and still get HTTP 200 from the Service?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=02-deploy
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-02-deploy -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                DATA   AGE
+progress-02-deploy  3      5s
+----
+====
+
+'''
+
+== Reset
+
+Delete the Service first, then the Deployment.
+The Deployment owns the Pods. Delete it after the Service so the Service does not keep stale endpoints during the delete.
+
+[.console-input]
+[source,bash]
+----
+oc delete service workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+oc delete deployment workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true
+----

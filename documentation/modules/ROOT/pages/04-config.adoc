@@ -1,0 +1,192 @@
+= Lab 4 - ConfigMaps and Secrets: change the app without a new image
+:page-time: 45
+include::_attributes.adoc[]
+
+Time: 45 minutes.
+
+You move the HTML page into a ConfigMap.
+You put a lab token in a Secret.
+The page shows the ConfigMap text. The page does not show the token.
+
+== Prerequisites
+
+* xref:03-ingress.adoc[Lab 3] is complete
+* The Route `workshop-web` exists
+* You are in the repository root
+
+== How it works
+
+A ConfigMap holds plain text that a Pod can mount as files.
+A Secret holds a value you do not want in a ConfigMap or in the image.
+This lab token is a sample string, `lab-sample-token`. It is not a production password.
+OpenShift still stores the Secret separately from the ConfigMap.
+
+== Steps to apply
+
+[#configmap]
+=== 1. Create the ConfigMap and the Secret
+
+*What:* Create both objects before you change the Deployment.
+
+*Why:* The Deployment mounts them. The Pod stays pending if either object is missing.
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 04-config/configmap.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 04-config/secret.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: Both objects exist
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap/workshop-web-page secret/workshop-web-token -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                         DATA   AGE
+configmap/workshop-web-page  1      5s
+secret/workshop-web-token    1      5s
+----
+====
+
+'''
+
+[#secret]
+=== 2. Mount the files and read them
+
+*What:* Roll out the Deployment that mounts the page and the token. Then read both.
+
+*Why:* The page comes from the ConfigMap. The token stays in the Secret file.
+
+icon:clock[] ~30 seconds (rollout)
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 04-config/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc exec deploy/workshop-web -c httpd -n "${WORKSHOP_NAMESPACE}" --context cluster -- cat /etc/workshop/token
+HOST="$(oc get route workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster -o jsonpath='{.spec.host}')"
+curl -sk "https://${HOST}"
+----
+
+NOTE: `curl -sk` skips TLS verification. A production client should trust the cluster CA instead.
+
+.Verify: The token is in the file and the page shows only the ConfigMap heading
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+lab-sample-token
+<html><body><h1>Hello from the ConfigMap</h1></body></html>
+----
+====
+
+WARNING: Do not put a real password in this Secret manifest. The file is in Git so the lab can mount a known sample.
+
+== What this solves (compared to Lab 3)
+
+[cols="2,3",options="header"]
+|===
+| Problem from Lab 3 | How this lab solves it
+
+| Page text lives only in the image
+| The ConfigMap supplies `index.html`
+
+| A token in the image or in the HTML is visible to every reader
+| The Secret is a file in the container. The page does not print it
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Addressed in
+
+| You have not set the CPU and memory for this lab's target values
+| xref:05-resources.adoc[Lab 5]
+
+| The Pod is Ready as soon as the process starts
+| xref:05-resources.adoc[Lab 5]
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-configmaps_nodes-pods-configmaps[ConfigMaps]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-secrets_nodes-pods-secrets[Secrets]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| ConfigMap and Secret volumes
+| Chosen. You can read the files with `cat` and `curl`.
+
+| Environment variables
+| Works for short values. A full HTML page is clearer as a file.
+
+| A new container image for every text change
+| Works, but you rebuild and pull an image for a one-line change.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to see the ConfigMap heading in the page and keep the token out of that page?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=04-config
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-04-config -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                 DATA   AGE
+progress-04-config   3      5s
+----
+====
+
+'''
+
+== Reset
+
+Delete the Secret and the ConfigMap after you restore the Lab 2 Deployment.
+The Lab 2 Deployment does not mount those objects.
+If you delete the ConfigMap first, the running Pod can keep a deleted volume until you roll the Deployment.
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 02-deploy/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc delete secret workshop-web-token -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+oc delete configmap workshop-web-page -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+----

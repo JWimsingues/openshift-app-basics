@@ -1,0 +1,91 @@
+= OpenShift application basics
+:page-layout: home
+:!sectids:
+include::_attributes.adoc[]
+
+[.text-center.strong]
+== From a Pod to a GitOps application
+
+You build one web app on a shared OpenShift cluster.
+Each lab adds one Kubernetes or OpenShift object.
+You need three sessions. Each session is about 2 hours 15 minutes to 2 hours 30 minutes.
+
+Select a module below to start.
+
+[.tile]
+****
+xref:00-setup.adoc[Cluster setup]
+
+Log in, export the workshop variables, and confirm your namespace.
+
+Time: 15 minutes. Session 1.
+****
+
+[.tile]
+****
+xref:01-pods.adoc[Lab 1 - Pods]
+
+Compare Kubernetes with OpenShift. Run a Pod with two containers.
+
+Time: 75 minutes. Session 1.
+****
+
+[.tile]
+****
+xref:02-deploy.adoc[Lab 2 - Deployments and Services]
+
+Keep the app running, and give it an address inside the cluster.
+
+Time: 50 minutes. Session 2.
+****
+
+[.tile]
+****
+xref:03-ingress.adoc[Lab 3 - Ingress and Routes]
+
+Publish the Service with an Ingress and with an OpenShift Route.
+
+Time: 40 minutes. Session 2.
+****
+
+[.tile]
+****
+xref:04-config.adoc[Lab 4 - ConfigMaps and Secrets]
+
+Change the page from a ConfigMap. Keep a token in a Secret.
+
+Time: 45 minutes. Session 2.
+****
+
+[.tile]
+****
+xref:05-resources.adoc[Lab 5 - Requests, limits, and probes]
+
+Set CPU and memory, and add readiness and liveness probes.
+
+Time: 50 minutes. Session 3.
+****
+
+[.tile]
+****
+xref:06-gitops.adoc[Lab 6 - Argo CD Application]
+
+Sync the app from Git with an Application custom resource.
+
+Time: 60 minutes. Session 3.
+****
+
+== Environment
+
+[cols="2,3",options="header"]
+|===
+| Item | Value
+
+| OpenShift version | {ocp-version}
+| OpenShift GitOps | {gitops-version}
+| Tenancy | Shared cluster, one namespace per student
+| Context | `cluster`
+| Web image | {httpd-image}
+|===
+
+Run the labs in order. Each lab uses the objects from the previous lab.

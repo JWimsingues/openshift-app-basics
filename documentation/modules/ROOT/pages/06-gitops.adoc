@@ -1,0 +1,248 @@
+= Lab 6 - Argo CD Application: sync the app from Git
+:page-time: 60
+include::_attributes.adoc[]
+
+Time: 60 minutes.
+
+You stop applying the app by hand.
+You create an Application custom resource in your namespace.
+OpenShift GitOps syncs the `gitops/` directory into that namespace.
+
+== Prerequisites
+
+* xref:05-resources.adoc[Lab 5] is complete
+* `GIT_REPO_URL` and `GIT_REVISION` are set
+* The instructor allowed Applications in `student-*` namespaces
+* The cluster can read the Git repository
+* You are in the repository root
+
+== How it works
+
+An Application points at a Git path and a destination namespace.
+The GitOps controller in `openshift-gitops` watches your namespace because the instructor set `spec.sourceNamespaces` to `student-*`.
+Your Application uses the AppProject named `workshop`.
+`syncPolicy.automated` syncs on its own.
+`selfHeal: true` puts the cluster back to Git if you edit a live object.
+`prune: false` does not delete extra objects.
+
+The `gitops/` path has no `${WORKSHOP_NAMESPACE}` tokens.
+The Application `destination.namespace` selects your namespace.
+Every student can use the same Git path.
+
+== Steps to apply
+
+[#remove-objects]
+=== 1. Remove the hand-managed objects
+
+*What:* Delete the Ingress, Route, Deployment, Service, ConfigMap, and Secret that you applied by hand.
+
+*Why:* Git becomes the only source. The controller creates the objects again.
+
+icon:clock[] ~30 seconds (Pods terminate)
+
+[.console-input]
+[source,bash]
+----
+oc delete --ignore-not-found=true --wait=true --context cluster -n "${WORKSHOP_NAMESPACE}" \
+  ingress/workshop-web \
+  route/workshop-web \
+  deployment/workshop-web \
+  service/workshop-web \
+  configmap/workshop-web-page \
+  secret/workshop-web-token
+----
+
+.Verify: The Deployment is gone
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get deployment workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+Error from server (NotFound): deployments.apps "workshop-web" not found
+----
+====
+
+'''
+
+[#application]
+=== 2. Create the Application
+
+*What:* Apply the Application in your namespace.
+
+*Why:* This custom resource is the GitOps request. You do not install another controller.
+
+`06-gitops/application.yaml` contains `${GIT_REPO_URL}`, `${GIT_REVISION}`, and `${WORKSHOP_NAMESPACE}`.
+`envsubst` replaces them. A plain `oc apply -f` would keep the tokens as text.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+envsubst < 06-gitops/application.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The Application object exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME           SYNC STATUS   HEALTH STATUS
+workshop-web   OutOfSync     Missing
+----
+====
+
+'''
+
+[#sync]
+=== 3. Wait until the Application is Synced and Healthy
+
+*What:* Wait for the controller to create the Deployment, Service, Route, ConfigMap, and Secret.
+
+*Why:* Synced means Git and the cluster match. Healthy means the probes pass.
+
+icon:clock[] ~2 minutes (sync starts in about 10 seconds, Pods become Ready in about 1 minute)
+
+The readiness probe still waits 15 seconds. Health stays `Progressing` during that wait.
+
+[.console-input]
+[source,bash]
+----
+oc wait --for=jsonpath='{.status.sync.status}'=Synced application/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+oc wait --for=jsonpath='{.status.health.status}'=Healthy application/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+oc get application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+HOST="$(oc get route workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster -o jsonpath='{.spec.host}')"
+curl -sk "https://${HOST}"
+----
+
+NOTE: `curl -sk` skips TLS verification. A production client should trust the cluster CA instead.
+
+NOTE: The Application does not copy the Ingress from Lab 3. GitOps manages the Route.
+
+.Verify: Status is Synced and Healthy, and the page is the ConfigMap heading
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+NAME           SYNC STATUS   HEALTH STATUS
+workshop-web   Synced        Healthy
+<html><body><h1>Hello from the ConfigMap</h1></body></html>
+----
+====
+
+TIP: If you change the live Deployment, GitOps changes it back. That is `selfHeal`.
+
+== What this solves (compared to Lab 5)
+
+[cols="2,3",options="header"]
+|===
+| Problem from Lab 5 | How this lab solves it
+
+| You apply each YAML file yourself
+| The Application syncs `gitops/` for you
+
+| A manual edit can drift from Git
+| `selfHeal: true` returns the objects to Git
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Where to go next
+
+| One Application does not generate many Applications
+| ApplicationSet is outside this workshop
+
+| This Application deploys only to this cluster
+| Multi-cluster GitOps is outside this workshop
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_applications/managing-apps-in-non-control-plane-namespaces[Applications in non-control plane namespaces]
+* link:https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_applications/index[Argo CD applications]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| One Application in the student namespace
+| Chosen. You do not need cluster-admin. The controller is shared.
+
+| An Application in the openshift-gitops namespace
+| That namespace is shared. A student admin role there would see other Applications.
+
+| Helm or Kustomize for this path
+| Useful for many overlays. These five files do not need a template tool.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to see the Application become Synced and Healthy?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=06-gitops
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-06-gitops -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                 DATA   AGE
+progress-06-gitops   3      5s
+----
+====
+
+'''
+
+== Reset
+
+Delete the Application first.
+This Application has no resource finalizer, so the delete does not remove the synced objects.
+Then apply the Lab 5 files again so the app is hand-managed, as it was before this lab.
+The Service, Route, ConfigMap, and Secret from Git can stay. Apply is safe to repeat.
+
+[.console-input]
+[source,bash]
+----
+oc delete application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true
+oc apply -f 04-config/configmap.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 04-config/secret.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 02-deploy/service.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 03-ingress/route.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 05-resources/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+----

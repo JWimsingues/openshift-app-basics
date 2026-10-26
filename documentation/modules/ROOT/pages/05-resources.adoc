@@ -1,0 +1,193 @@
+= Lab 5 - Requests, limits, and probes: tell the scheduler and the router
+:page-time: 50
+include::_attributes.adoc[]
+
+Time: 50 minutes.
+
+You set CPU and memory requests and limits on the web container.
+You add a readiness probe and a liveness probe.
+The Pod stays not Ready until the readiness probe passes.
+
+== Prerequisites
+
+* xref:04-config.adoc[Lab 4] is complete
+* The ConfigMap, Secret, Service, and Route still exist
+* You are in the repository root
+
+== How it works
+
+A request is what the scheduler reserves.
+A limit is the maximum the container can use.
+A readiness probe decides if the Pod should receive Service traffic.
+A liveness probe decides if the kubelet should restart the container.
+The readiness probe waits 15 seconds before the first check.
+During that wait the Pod stays `0/1`.
+
+== Steps to apply
+
+[#resources]
+=== 1. Set requests and limits
+
+*What:* Apply the Deployment that requests 100m CPU and 128Mi memory, and limits the container to 300m CPU and 256Mi memory.
+
+*Why:* The scheduler needs the request. The limit stops one container from taking the node.
+
+The same file also adds the probes. The next step watches those probes.
+Apply the file once.
+
+icon:clock[] ~20 seconds (readiness waits 15 seconds, then the probe runs)
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 05-resources/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: The containers show the new limits
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc describe pod -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster | grep -A 4 "Limits:"
+----
+
+[.console-output]
+[source,bash]
+----
+    Limits:
+      cpu:     300m
+      memory:  256Mi
+    Requests:
+      cpu:     100m
+----
+====
+
+'''
+
+[#probes]
+=== 2. Watch the probes
+
+*What:* Wait until the readiness probe passes, then confirm both Pods are Ready.
+
+*Why:* A Pod that fails readiness stays out of the Service. A failed liveness probe restarts the container.
+
+icon:clock[] ~20 seconds
+
+[.console-input]
+[source,bash]
+----
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+.Verify: Both Pods show 1/1 Ready
+[%collapsible]
+====
+[.console-output]
+[source,bash]
+----
+NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-6b8d4c9f7a-aaaaa   1/1     Running   0          40s
+workshop-web-6b8d4c9f7a-bbbbb   1/1     Running   0          40s
+----
+====
+
+If you ran `oc get pods` in step 1 before 15 seconds, `READY` was `0/1`.
+That was the readiness probe waiting. It is the result this lab asks you to see.
+
+== What this solves (compared to Lab 4)
+
+[cols="2,3",options="header"]
+|===
+| Problem from Lab 4 | How this lab solves it
+
+| The scheduler does not know how much CPU this lab wants
+| The container requests 100m CPU and 128Mi memory
+
+| The Service can send traffic before httpd answers
+| The readiness probe must pass first
+|===
+
+== What this does not solve (yet)
+
+[cols="2,3",options="header"]
+|===
+| Remaining problem | Addressed in
+
+| You still apply YAML by hand. Git is not the source
+| xref:06-gitops.adoc[Lab 6]
+|===
+
+== Official documentation
+
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-configuring_nodes-pods-configuring[Pod resource requests and limits]
+* link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/building_applications/application-health[Application health]
+
+== Alternatives considered
+
+[cols="2,4",options="header"]
+|===
+| Approach | Notes
+
+| Requests, limits, httpGet probes
+| Chosen. `httpGet` on `/` checks that httpd serves the ConfigMap page.
+
+| A TCP probe only
+| Proves the port is open. It does not prove that `/` returns the page.
+
+| No limits
+| The quota still caps the namespace. One container can still starve another Pod.
+|===
+
+'''
+
+== Check your work
+
+[.verification]
+****
+Were you able to see 0/1 before the probe passed, and then 1/1 with the limits you set?
+****
+
+Record your progress after you can answer yes.
+`envsubst` replaces `${WORKSHOP_USER}`, `${WORKSHOP_NAMESPACE}`, and `${EXERCISE_ID}`.
+
+[.console-input]
+[source,bash]
+----
+export EXERCISE_ID=05-resources
+envsubst < instructor/progress-configmap.yaml | oc apply --context cluster -f -
+----
+
+.Verify: The progress record exists
+[%collapsible]
+====
+[.console-input]
+[source,bash]
+----
+oc get configmap progress-05-resources -n "${WORKSHOP_NAMESPACE}" --context cluster
+----
+
+[.console-output]
+[source,bash]
+----
+NAME                    DATA   AGE
+progress-05-resources   3      5s
+----
+====
+
+'''
+
+== Reset
+
+Apply the Lab 4 Deployment again.
+That file keeps the ConfigMap and the Secret. It removes the probes and restores the earlier CPU and memory values.
+Wait for the rollout so the old Pods are gone.
+
+[.console-input]
+[source,bash]
+----
+oc apply -f 04-config/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+----

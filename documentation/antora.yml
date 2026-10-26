@@ -1,0 +1,6 @@
+name: openshift-app-basics
+title: OpenShift application basics
+version: master
+nav:
+  - modules/ROOT/nav.adoc
+start_page: ROOT:index.adoc
