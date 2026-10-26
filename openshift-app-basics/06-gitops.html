@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift application basics :: OpenShift application basics</title>
+    <link rel="canonical" href="https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/06-gitops.html">
+    <link rel="prev" href="05-resources.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://jwimsingues.github.io/openshift-app-basics">OpenShift application basics</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="openshift-app-basics" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="00-setup.html">Cluster setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#prerequisites">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#tenancy">Tenancy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#login-clusters">Log in</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#export-variables">Export workshop variables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#clone">Clone the repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#gitops-crd">Confirm the Application CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01-pods.html">Lab 1 - Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#compare">Compare Kubernetes and OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#image">Inspect the image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#single-pod">Run one container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#sidecar">Add a sidecar</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-deploy.html">Lab 2 - Deployments and Services</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#deployment">Create the Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#service">Create the Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#replace-pod">Replace a Pod</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-ingress.html">Lab 3 - Ingress and Routes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#ingress">Create an Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#route">Create a Route</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-config.html">Lab 4 - ConfigMaps and Secrets</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#configmap">Create the ConfigMap and the Secret</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#secret">Mount the files</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05-resources.html">Lab 5 - Requests, limits, and probes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#resources">Set requests and limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#probes">Add health probes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06-gitops.html">Lab 6 - Argo CD Application</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#remove-objects">Remove the hand-managed objects</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#application">Create the Application</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#sync">Wait for sync</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">OpenShift application basics</a></li>
+    <li><a href="06-gitops.html">Lab 6 - Argo CD Application</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/JWimsingues/openshift-app-basics/edit/main/documentation/modules/ROOT/pages/06-gitops.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenShift application basics</h1>
+<div id="preamble">
+<div class="sectionbody">
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+<div class="paragraph">
+<p>Time: 60 minutes.</p>
+</div>
+<div class="paragraph">
+<p>You stop applying the app by hand.
+You create an Application custom resource in your namespace.
+OpenShift GitOps syncs the <code>gitops/</code> directory into that namespace.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="05-resources.html" class="xref page">Lab 5</a> is complete</p>
+</li>
+<li>
+<p><code>GIT_REPO_URL</code> and <code>GIT_REVISION</code> are set</p>
+</li>
+<li>
+<p>The instructor allowed Applications in <code>student-*</code> namespaces</p>
+</li>
+<li>
+<p>The cluster can read the Git repository</p>
+</li>
+<li>
+<p>You are in the repository root</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works"><a class="anchor" href="#_how_it_works"></a>How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An Application points at a Git path and a destination namespace.
+The GitOps controller in <code>openshift-gitops</code> watches your namespace because the instructor set <code>spec.sourceNamespaces</code> to <code>student-*</code>.
+Your Application uses the AppProject named <code>workshop</code>.
+<code>syncPolicy.automated</code> syncs on its own.
+<code>selfHeal: true</code> puts the cluster back to Git if you edit a live object.
+<code>prune: false</code> does not delete extra objects.</p>
+</div>
+<div class="paragraph">
+<p>The <code>gitops/</code> path has no <code>${WORKSHOP_NAMESPACE}</code> tokens.
+The Application <code>destination.namespace</code> selects your namespace.
+Every student can use the same Git path.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_steps_to_apply"><a class="anchor" href="#_steps_to_apply"></a>Steps to apply</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="remove-objects"><a class="anchor" href="#remove-objects"></a>1. Remove the hand-managed objects</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Delete the Ingress, Route, Deployment, Service, ConfigMap, and Secret that you applied by hand.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Git becomes the only source. The controller creates the objects again.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~30 seconds (Pods terminate)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete --ignore-not-found=true --wait=true --context cluster -n "${WORKSHOP_NAMESPACE}" \
+  ingress/workshop-web \
+  route/workshop-web \
+  deployment/workshop-web \
+  service/workshop-web \
+  configmap/workshop-web-page \
+  secret/workshop-web-token</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The Deployment is gone</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get deployment workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server (NotFound): deployments.apps "workshop-web" not found</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="application"><a class="anchor" href="#application"></a>2. Create the Application</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Apply the Application in your namespace.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> This custom resource is the GitOps request. You do not install another controller.</p>
+</div>
+<div class="paragraph">
+<p><code>06-gitops/application.yaml</code> contains <code>${GIT_REPO_URL}</code>, <code>${GIT_REVISION}</code>, and <code>${WORKSHOP_NAMESPACE}</code>.
+<code>envsubst</code> replaces them. A plain <code>oc apply -f</code> would keep the tokens as text.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">envsubst &lt; 06-gitops/application.yaml | oc apply --context cluster -f -</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The Application object exists</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME           SYNC STATUS   HEALTH STATUS
+workshop-web   OutOfSync     Missing</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="sync"><a class="anchor" href="#sync"></a>3. Wait until the Application is Synced and Healthy</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Wait for the controller to create the Deployment, Service, Route, ConfigMap, and Secret.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Synced means Git and the cluster match. Healthy means the probes pass.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~2 minutes (sync starts in about 10 seconds, Pods become Ready in about 1 minute)</p>
+</div>
+<div class="paragraph">
+<p>The readiness probe still waits 15 seconds. Health stays <code>Progressing</code> during that wait.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait --for=jsonpath='{.status.sync.status}'=Synced application/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+oc wait --for=jsonpath='{.status.health.status}'=Healthy application/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --timeout=180s
+oc get application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+HOST="$(oc get route workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster -o jsonpath='{.spec.host}')"
+curl -sk "https://${HOST}"</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>curl -sk</code> skips TLS verification. A production client should trust the cluster CA instead.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The Application does not copy the Ingress from Lab 3. GitOps manages the Route.
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Verify: Status is Synced and Healthy, and the page is the ConfigMap heading</summary>
+<div class="content">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME           SYNC STATUS   HEALTH STATUS
+workshop-web   Synced        Healthy
+&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello from the ConfigMap&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you change the live Deployment, GitOps changes it back. That is <code>selfHeal</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_solves_compared_to_lab_5"><a class="anchor" href="#_what_this_solves_compared_to_lab_5"></a>What this solves (compared to Lab 5)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem from Lab 5</th>
+<th class="tableblock halign-left valign-top">How this lab solves it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You apply each YAML file yourself</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Application syncs <code>gitops/</code> for you</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A manual edit can drift from Git</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>selfHeal: true</code> returns the objects to Git</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_does_not_solve_yet"><a class="anchor" href="#_what_this_does_not_solve_yet"></a>What this does not solve (yet)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Remaining problem</th>
+<th class="tableblock halign-left valign-top">Where to go next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One Application does not generate many Applications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ApplicationSet is outside this workshop</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This Application deploys only to this cluster</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-cluster GitOps is outside this workshop</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_official_documentation"><a class="anchor" href="#_official_documentation"></a>Official documentation</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_applications/managing-apps-in-non-control-plane-namespaces">Applications in non-control plane namespaces</a></p>
+</li>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/1.21/html/argo_cd_applications/index">Argo CD applications</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered"><a class="anchor" href="#_alternatives_considered"></a>Alternatives considered</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Approach</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One Application in the student namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Chosen. You do not need cluster-admin. The controller is shared.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An Application in the openshift-gitops namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">That namespace is shared. A student admin role there would see other Applications.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Helm or Kustomize for this path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Useful for many overlays. These five files do not need a template tool.</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_work"><a class="anchor" href="#_check_your_work"></a>Check your work</h2>
+<div class="sectionbody">
+<div class="sidebarblock verification">
+<div class="content">
+<div class="paragraph">
+<p>Were you able to see the Application become Synced and Healthy?</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Record your progress after you can answer yes.
+<code>envsubst</code> replaces <code>${WORKSHOP_USER}</code>, <code>${WORKSHOP_NAMESPACE}</code>, and <code>${EXERCISE_ID}</code>.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export EXERCISE_ID=06-gitops
+envsubst &lt; instructor/progress-configmap.yaml | oc apply --context cluster -f -</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The progress record exists</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get configmap progress-06-gitops -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                 DATA   AGE
+progress-06-gitops   3      5s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reset"><a class="anchor" href="#_reset"></a>Reset</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Delete the Application first.
+This Application has no resource finalizer, so the delete does not remove the synced objects.
+Then apply the Lab 5 files again so the app is hand-managed, as it was before this lab.
+The Service, Route, ConfigMap, and Secret from Git can stay. Apply is safe to repeat.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete application workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true
+oc apply -f 04-config/configmap.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 04-config/secret.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 02-deploy/service.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 03-ingress/route.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc apply -f 05-resources/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="05-resources.html">Lab 5 - Requests, limits, and probes</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

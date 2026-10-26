@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift application basics :: OpenShift application basics</title>
+    <link rel="canonical" href="https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/02-deploy.html">
+    <link rel="prev" href="01-pods.html">
+    <link rel="next" href="03-ingress.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://jwimsingues.github.io/openshift-app-basics">OpenShift application basics</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="openshift-app-basics" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="00-setup.html">Cluster setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#prerequisites">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#tenancy">Tenancy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#login-clusters">Log in</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#export-variables">Export workshop variables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#clone">Clone the repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#gitops-crd">Confirm the Application CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01-pods.html">Lab 1 - Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#compare">Compare Kubernetes and OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#image">Inspect the image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#single-pod">Run one container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#sidecar">Add a sidecar</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-deploy.html">Lab 2 - Deployments and Services</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deployment">Create the Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#service">Create the Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#replace-pod">Replace a Pod</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-ingress.html">Lab 3 - Ingress and Routes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#ingress">Create an Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#route">Create a Route</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-config.html">Lab 4 - ConfigMaps and Secrets</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#configmap">Create the ConfigMap and the Secret</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#secret">Mount the files</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05-resources.html">Lab 5 - Requests, limits, and probes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#resources">Set requests and limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#probes">Add health probes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06-gitops.html">Lab 6 - Argo CD Application</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#remove-objects">Remove the hand-managed objects</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#application">Create the Application</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#sync">Wait for sync</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">OpenShift application basics</a></li>
+    <li><a href="02-deploy.html">Lab 2 - Deployments and Services</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/JWimsingues/openshift-app-basics/edit/main/documentation/modules/ROOT/pages/02-deploy.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenShift application basics</h1>
+<div id="preamble">
+<div class="sectionbody">
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+<div class="paragraph">
+<p>Time: 50 minutes.</p>
+</div>
+<div class="paragraph">
+<p>You replace the bare Pod with a Deployment and a Service.
+The Deployment starts a new Pod when you delete one.
+The Service keeps one address for both Pods.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="01-pods.html" class="xref page">Lab 1</a> is complete</p>
+</li>
+<li>
+<p>You are in the repository root</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works"><a class="anchor" href="#_how_it_works"></a>How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Deployment owns a ReplicaSet. The ReplicaSet owns the Pods.
+You set the replica count. The Deployment tries to keep that count.
+A Service selects Pods by label. Clients use the Service name, not the Pod IP.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_steps_to_apply"><a class="anchor" href="#_steps_to_apply"></a>Steps to apply</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="deployment"><a class="anchor" href="#deployment"></a>1. Create the Deployment</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Delete the bare Pod and apply a Deployment with two replicas.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> A Deployment recreates Pods. A bare Pod does not.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~1 minute (two Pods pull the image)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete pod workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true
+oc apply -f 02-deploy/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: Two Pods are Ready</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-7d9c8b6f4d-abcde   1/1     Running   0          40s
+workshop-web-7d9c8b6f4d-fghij   1/1     Running   0          40s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="service"><a class="anchor" href="#service"></a>2. Create the Service</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Apply a Service that selects <code>app=workshop-web</code> on port 8080.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Pod IPs change. The Service name <code>workshop-web</code> stays the same.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f 02-deploy/service.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The Service has two endpoints</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get endpoints workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME           ENDPOINTS                         AGE
+workshop-web   10.128.0.10:8080,10.128.0.11:8080 10s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="replace-pod"><a class="anchor" href="#replace-pod"></a>3. Replace a Pod and send requests</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Delete one Pod, then send two requests through the Service.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> You prove the Deployment creates a replacement and the Service still answers.</p>
+</div>
+<div class="paragraph">
+<p><code>oc port-forward</code> blocks. Open a second terminal for <code>curl</code>, or stop the forward with Ctrl-C after the two requests.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete pod -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --wait=true
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc port-forward svc/workshop-web 8080:8080 -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the second terminal:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: New Pods exist and both requests return 200</summary>
+<div class="content">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-7d9c8b6f4d-klmno   1/1     Running   0          20s
+workshop-web-7d9c8b6f4d-pqrst   1/1     Running   0          20s
+200
+200</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_solves_compared_to_lab_1"><a class="anchor" href="#_what_this_solves_compared_to_lab_1"></a>What this solves (compared to Lab 1)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem from Lab 1</th>
+<th class="tableblock halign-left valign-top">How this lab solves it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A deleted Pod stays gone</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Deployment starts a new Pod</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clients must know a Pod IP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Service selects Pods by label</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_does_not_solve_yet"><a class="anchor" href="#_what_this_does_not_solve_yet"></a>What this does not solve (yet)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Remaining problem</th>
+<th class="tableblock halign-left valign-top">Addressed in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Users outside the cluster cannot open the Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="03-ingress.html" class="xref page">Lab 3</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The page is still the image default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="04-config.html" class="xref page">Lab 4</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_official_documentation"><a class="anchor" href="#_official_documentation"></a>Official documentation</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/building_applications/deployments">Deployments</a></p>
+</li>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/networking/understanding-networking">Services</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered"><a class="anchor" href="#_alternatives_considered"></a>Alternatives considered</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Approach</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployment and Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Chosen. The Deployment keeps the replica count. The Service hides Pod IPs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A bare Pod and a Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Service works until the Pod is deleted. Nothing recreates the Pod.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A StatefulSet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Useful for stable network names and storage. This web app does not need that.</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_work"><a class="anchor" href="#_check_your_work"></a>Check your work</h2>
+<div class="sectionbody">
+<div class="sidebarblock verification">
+<div class="content">
+<div class="paragraph">
+<p>Were you able to delete a Pod and still get HTTP 200 from the Service?</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Record your progress after you can answer yes.
+<code>envsubst</code> replaces <code>${WORKSHOP_USER}</code>, <code>${WORKSHOP_NAMESPACE}</code>, and <code>${EXERCISE_ID}</code>.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export EXERCISE_ID=02-deploy
+envsubst &lt; instructor/progress-configmap.yaml | oc apply --context cluster -f -</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The progress record exists</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get configmap progress-02-deploy -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                DATA   AGE
+progress-02-deploy  3      5s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reset"><a class="anchor" href="#_reset"></a>Reset</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Delete the Service first, then the Deployment.
+The Deployment owns the Pods. Delete it after the Service so the Service does not keep stale endpoints during the delete.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete service workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true
+oc delete deployment workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster --ignore-not-found=true --wait=true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="01-pods.html">Lab 1 - Pods</a></span>
+  <span class="next"><a href="03-ingress.html">Lab 3 - Ingress and Routes</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

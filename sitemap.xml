@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/00-setup.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/01-pods.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/02-deploy.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/03-ingress.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/04-config.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/05-resources.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/06-gitops.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+<url>
+<loc>https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/index.html</loc>
+<lastmod>2026-10-26T16:59:17.589Z</lastmod>
+</url>
+</urlset>

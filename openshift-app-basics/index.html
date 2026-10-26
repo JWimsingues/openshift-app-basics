@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift application basics :: OpenShift application basics</title>
+    <link rel="canonical" href="https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/index.html">
+    <link rel="next" href="00-setup.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://jwimsingues.github.io/openshift-app-basics">OpenShift application basics</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="openshift-app-basics" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="00-setup.html">Cluster setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#prerequisites">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#tenancy">Tenancy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#login-clusters">Log in</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#export-variables">Export workshop variables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#clone">Clone the repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#gitops-crd">Confirm the Application CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01-pods.html">Lab 1 - Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#compare">Compare Kubernetes and OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#image">Inspect the image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#single-pod">Run one container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#sidecar">Add a sidecar</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-deploy.html">Lab 2 - Deployments and Services</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#deployment">Create the Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#service">Create the Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#replace-pod">Replace a Pod</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-ingress.html">Lab 3 - Ingress and Routes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#ingress">Create an Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#route">Create a Route</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-config.html">Lab 4 - ConfigMaps and Secrets</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#configmap">Create the ConfigMap and the Secret</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#secret">Mount the files</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05-resources.html">Lab 5 - Requests, limits, and probes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#resources">Set requests and limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#probes">Add health probes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06-gitops.html">Lab 6 - Argo CD Application</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#remove-objects">Remove the hand-managed objects</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#application">Create the Application</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#sync">Wait for sync</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link is-current"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">OpenShift application basics</a></li>
+    <li><a href="index.html">Overview</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/JWimsingues/openshift-app-basics/edit/main/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenShift application basics</h1>
+<div id="preamble">
+<div class="sectionbody">
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+</div>
+</div>
+<div class="sect1 text-center strong">
+<h2>From a Pod to a GitOps application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You build one web app on a shared OpenShift cluster.
+Each lab adds one Kubernetes or OpenShift object.
+You need three sessions. Each session is about 2 hours 15 minutes to 2 hours 30 minutes.</p>
+</div>
+<div class="paragraph">
+<p>Select a module below to start.</p>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="00-setup.html" class="xref page">Cluster setup</a></p>
+</div>
+<div class="paragraph">
+<p>Log in, export the workshop variables, and confirm your namespace.</p>
+</div>
+<div class="paragraph">
+<p>Time: 15 minutes. Session 1.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="01-pods.html" class="xref page">Lab 1 - Pods</a></p>
+</div>
+<div class="paragraph">
+<p>Compare Kubernetes with OpenShift. Run a Pod with two containers.</p>
+</div>
+<div class="paragraph">
+<p>Time: 75 minutes. Session 1.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="02-deploy.html" class="xref page">Lab 2 - Deployments and Services</a></p>
+</div>
+<div class="paragraph">
+<p>Keep the app running, and give it an address inside the cluster.</p>
+</div>
+<div class="paragraph">
+<p>Time: 50 minutes. Session 2.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="03-ingress.html" class="xref page">Lab 3 - Ingress and Routes</a></p>
+</div>
+<div class="paragraph">
+<p>Publish the Service with an Ingress and with an OpenShift Route.</p>
+</div>
+<div class="paragraph">
+<p>Time: 40 minutes. Session 2.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="04-config.html" class="xref page">Lab 4 - ConfigMaps and Secrets</a></p>
+</div>
+<div class="paragraph">
+<p>Change the page from a ConfigMap. Keep a token in a Secret.</p>
+</div>
+<div class="paragraph">
+<p>Time: 45 minutes. Session 2.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="05-resources.html" class="xref page">Lab 5 - Requests, limits, and probes</a></p>
+</div>
+<div class="paragraph">
+<p>Set CPU and memory, and add readiness and liveness probes.</p>
+</div>
+<div class="paragraph">
+<p>Time: 50 minutes. Session 3.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock tile">
+<div class="content">
+<div class="paragraph">
+<p><a href="06-gitops.html" class="xref page">Lab 6 - Argo CD Application</a></p>
+</div>
+<div class="paragraph">
+<p>Sync the app from Git with an Application custom resource.</p>
+</div>
+<div class="paragraph">
+<p>Time: 60 minutes. Session 3.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2>Environment</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Item</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.16+</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift GitOps</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.13+</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shared cluster, one namespace per student</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Context</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cluster</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Web image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">registry.access.redhat.com/ubi9/httpd-24</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Run the labs in order. Each lab uses the objects from the previous lab.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="next"><a href="00-setup.html">Cluster setup</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

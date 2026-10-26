@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift application basics :: OpenShift application basics</title>
+    <link rel="canonical" href="https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/00-setup.html">
+    <link rel="prev" href="index.html">
+    <link rel="next" href="01-pods.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://jwimsingues.github.io/openshift-app-basics">OpenShift application basics</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="openshift-app-basics" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Overview</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="00-setup.html">Cluster setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#prerequisites">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#tenancy">Tenancy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#login-clusters">Log in</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#export-variables">Export workshop variables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#clone">Clone the repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#gitops-crd">Confirm the Application CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01-pods.html">Lab 1 - Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#compare">Compare Kubernetes and OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#image">Inspect the image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#single-pod">Run one container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#sidecar">Add a sidecar</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-deploy.html">Lab 2 - Deployments and Services</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#deployment">Create the Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#service">Create the Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#replace-pod">Replace a Pod</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-ingress.html">Lab 3 - Ingress and Routes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#ingress">Create an Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#route">Create a Route</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-config.html">Lab 4 - ConfigMaps and Secrets</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#configmap">Create the ConfigMap and the Secret</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#secret">Mount the files</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05-resources.html">Lab 5 - Requests, limits, and probes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#resources">Set requests and limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-resources.html#probes">Add health probes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06-gitops.html">Lab 6 - Argo CD Application</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#remove-objects">Remove the hand-managed objects</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#application">Create the Application</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#sync">Wait for sync</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">OpenShift application basics</a></li>
+    <li><a href="00-setup.html">Cluster setup</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/JWimsingues/openshift-app-basics/edit/main/documentation/modules/ROOT/pages/00-setup.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenShift application basics</h1>
+<div id="preamble">
+<div class="sectionbody">
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+<div class="paragraph">
+<p>Time: 15 minutes.</p>
+</div>
+<div class="paragraph">
+<p>You log in to the shared cluster and confirm your namespace.
+Later labs use the variables you export here.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>oc</code> from OpenShift 4.16+</p>
+</li>
+<li>
+<p><code>git</code></p>
+</li>
+<li>
+<p><code>envsubst</code> from the <code>gettext</code> package</p>
+</li>
+<li>
+<p><code>curl</code></p>
+</li>
+<li>
+<p>A student id that looks like <code>student-01</code></p>
+</li>
+<li>
+<p>The instructor already created your namespace, quota, and RoleBinding</p>
+</li>
+<li>
+<p>The instructor already installed OpenShift GitOps 1.13+</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tenancy"><a class="anchor" href="#tenancy"></a>Tenancy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This workshop uses a shared cluster.
+Many students use one cluster.
+You are not <code>cluster-admin</code>.</p>
+</div>
+<div class="paragraph">
+<p>Your namespace name is your student id.
+You can create objects only in that namespace.
+The instructor installed OpenShift GitOps once for the whole cluster.
+You create an Application in your namespace in the last lab.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="login-clusters"><a class="anchor" href="#login-clusters"></a>1. Log in</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>What:</strong> Create <code>myenv.sh</code>, log in, and name the context <code>cluster</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Every later command uses <code>--context cluster</code>.</p>
+</div>
+<div class="paragraph">
+<p>Use one of the two options.</p>
+</div>
+<div class="sect2">
+<h3 id="_option_a_pre_provisioned_cluster"><a class="anchor" href="#_option_a_pre_provisioned_cluster"></a>Option A - Pre-provisioned cluster</h3>
+<div class="paragraph">
+<p>The instructor created your user and your namespace.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Copy <code>myenv.sh.example</code> to <code>myenv.sh</code>.</p>
+</li>
+<li>
+<p>Set <code>WORKSHOP_USER</code> to your student id.</p>
+</li>
+<li>
+<p>Set <code>APPS_DOMAIN</code>, <code>GIT_REPO_URL</code>, <code>GIT_REVISION</code>, and <code>CLUSTER_API_URL</code> to the values from the instructor.</p>
+</li>
+<li>
+<p>Set the user and password in the <code>oc login</code> line.</p>
+</li>
+<li>
+<p>Run <code>source myenv.sh</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_option_b_quick_login"><a class="anchor" href="#_option_b_quick_login"></a>Option B - Quick login</h3>
+<div class="paragraph">
+<p>Someone else already filled in <code>myenv.sh</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run <code>source myenv.sh</code>.</p>
+</li>
+<li>
+<p>Do not change the context name. It must stay <code>cluster</code>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>myenv.sh</code> contains your password. Do not commit it. The file is listed in <code>.gitignore</code>.
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Verify: The context name is cluster</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc whoami --context cluster
+oc config current-context</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">student-01
+cluster</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="export-variables"><a class="anchor" href="#export-variables"></a>2. Export the workshop variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>What:</strong> Export the variables that later files and commands read.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> <code>envsubst</code> and <code>oc -n</code> fail if these variables are empty.</p>
+</div>
+<div class="paragraph">
+<p><code>source myenv.sh</code> exports them. This table is the list you must set.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Variable</th>
+<th class="tableblock halign-left valign-top">Used in</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORKSHOP_USER</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>instructor/progress-configmap.yaml</code> and the namespace RoleBinding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Student id, such as <code>student-01</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>WORKSHOP_NAMESPACE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oc -n</code> and the Application</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Namespace for this student. Same value as <code>WORKSHOP_USER</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>APPS_DOMAIN</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>03-ingress/ingress.yaml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apps domain of the cluster, such as <code>apps.cluster.example.com</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GIT_REPO_URL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>06-gitops/application.yaml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git clone URL of this workshop repository</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GIT_REVISION</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>06-gitops/application.yaml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git branch that OpenShift GitOps reads. Use <code>main</code> unless the instructor says otherwise</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CLUSTER_API_URL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myenv.sh</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API URL for <code>oc login</code></p></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary class="title">Verify: The variables are set</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "${WORKSHOP_USER} ${WORKSHOP_NAMESPACE} ${APPS_DOMAIN}"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">student-01 student-01 apps.cluster.example.com</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clone"><a class="anchor" href="#clone"></a>3. Clone the repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>What:</strong> Clone this repository and change to its root directory.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> The lab commands use paths such as <code>01-pods/pod.yaml</code>.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone "${GIT_REPO_URL}"
+cd openshift-app-basics</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The lab folders exist</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ls 01-pods 02-deploy instructor</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">01-pods:
+multi-container-pod.yaml
+pod.yaml
+
+02-deploy:
+deployment.yaml
+service.yaml
+
+instructor:
+00-student-namespace.yaml
+progress-configmap.yaml
+progress.sh</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_confirm_your_namespace_and_quota"><a class="anchor" href="#_4_confirm_your_namespace_and_quota"></a>4. Confirm your namespace and quota</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>What:</strong> Read the namespace, the quota, and your access.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Later labs create Pods only in this namespace. The quota stops one student from using the whole cluster.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get namespace "${WORKSHOP_NAMESPACE}" --context cluster
+oc get resourcequota student-quota -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc auth can-i create pods -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: You can create Pods in your namespace</summary>
+<div class="content">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME         STATUS   AGE
+student-01   Active   1h
+
+NAME            AGE   REQUEST                          LIMIT
+student-quota   1h    pods: 0/10, requests.cpu: 0/1    limits.cpu: 0/2
+
+yes</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gitops-crd"><a class="anchor" href="#gitops-crd"></a>5. Confirm the Application CRD</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>What:</strong> Check that the cluster knows the Argo CD Application type.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> Lab 6 creates an Application. You do not install the operator.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~15 seconds</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc explain application.argoproj.io --context cluster</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You do not need permission in the <code>openshift-gitops</code> namespace.
+<code>oc explain</code> only checks that the custom resource exists.
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Verify: The explain command prints the Application fields</summary>
+<div class="content">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">KIND:     Application
+VERSION:  argoproj.io/v1alpha1</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_official_documentation"><a class="anchor" href="#_official_documentation"></a>Official documentation</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/authentication_and_authorization/index">OpenShift authentication and authorization</a></p>
+</li>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc">OpenShift CLI</a></p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_work"><a class="anchor" href="#_check_your_work"></a>Check your work</h2>
+<div class="sectionbody">
+<div class="sidebarblock verification">
+<div class="content">
+<div class="paragraph">
+<p>Were you able to run oc whoami and see your namespace?</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Record your progress after you can answer yes.
+<code>envsubst</code> replaces <code>${WORKSHOP_USER}</code>, <code>${WORKSHOP_NAMESPACE}</code>, and <code>${EXERCISE_ID}</code>.
+A plain <code>oc apply -f</code> would store those tokens as literal text.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export EXERCISE_ID=00-setup
+envsubst &lt; instructor/progress-configmap.yaml | oc apply --context cluster -f -</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The progress record exists</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get configmap progress-00-setup -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME               DATA   AGE
+progress-00-setup  3      5s</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Overview</a></span>
+  <span class="next"><a href="01-pods.html">Lab 1 - Pods</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift application basics :: OpenShift application basics</title>
+    <link rel="canonical" href="https://jwimsingues.github.io/openshift-app-basics/openshift-app-basics/05-resources.html">
+    <link rel="prev" href="04-config.html">
+    <link rel="next" href="06-gitops.html">
+    <meta name="generator" content="Antora 3.0.0">
+    <link rel="stylesheet" href="../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img src="../_/img/RHDLogo.svg" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="https://jwimsingues.github.io/openshift-app-basics">OpenShift application basics</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="openshift-app-basics" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html"></a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="00-setup.html">Cluster setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#prerequisites">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#tenancy">Tenancy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#login-clusters">Log in</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#export-variables">Export workshop variables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#clone">Clone the repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="00-setup.html#gitops-crd">Confirm the Application CRD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01-pods.html">Lab 1 - Pods</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#compare">Compare Kubernetes and OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#image">Inspect the image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#single-pod">Run one container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-pods.html#sidecar">Add a sidecar</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02-deploy.html">Lab 2 - Deployments and Services</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#deployment">Create the Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#service">Create the Service</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-deploy.html#replace-pod">Replace a Pod</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03-ingress.html">Lab 3 - Ingress and Routes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#ingress">Create an Ingress</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-ingress.html#route">Create a Route</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04-config.html">Lab 4 - ConfigMaps and Secrets</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#configmap">Create the ConfigMap and the Secret</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-config.html#secret">Mount the files</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05-resources.html">Lab 5 - Requests, limits, and probes</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#resources">Set requests and limits</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#probes">Add health probes</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06-gitops.html">Lab 6 - Argo CD Application</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#remove-objects">Remove the hand-managed objects</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#application">Create the Application</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-gitops.html#sync">Wait for sync</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">OpenShift application basics</a></li>
+    <li><a href="05-resources.html">Lab 5 - Requests, limits, and probes</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="https://github.com/JWimsingues/openshift-app-basics/edit/main/documentation/modules/ROOT/pages/05-resources.adoc">Edit this Page</a></div>
+  </div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">OpenShift application basics</h1>
+<div id="preamble">
+<div class="sectionbody">
+<style>
+.verification {
+  border: 2px solid #3d5a3d;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f4f8f4;
+}
+.verification::before {
+  content: "Check your work";
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+</style>
+<div class="paragraph">
+<p>Time: 50 minutes.</p>
+</div>
+<div class="paragraph">
+<p>You set CPU and memory requests and limits on the web container.
+You add a readiness probe and a liveness probe.
+The Pod stays not Ready until the readiness probe passes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="04-config.html" class="xref page">Lab 4</a> is complete</p>
+</li>
+<li>
+<p>The ConfigMap, Secret, Service, and Route still exist</p>
+</li>
+<li>
+<p>You are in the repository root</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works"><a class="anchor" href="#_how_it_works"></a>How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A request is what the scheduler reserves.
+A limit is the maximum the container can use.
+A readiness probe decides if the Pod should receive Service traffic.
+A liveness probe decides if the kubelet should restart the container.
+The readiness probe waits 15 seconds before the first check.
+During that wait the Pod stays <code>0/1</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_steps_to_apply"><a class="anchor" href="#_steps_to_apply"></a>Steps to apply</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="resources"><a class="anchor" href="#resources"></a>1. Set requests and limits</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Apply the Deployment that requests 100m CPU and 128Mi memory, and limits the container to 300m CPU and 256Mi memory.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> The scheduler needs the request. The limit stops one container from taking the node.</p>
+</div>
+<div class="paragraph">
+<p>The same file also adds the probes. The next step watches those probes.
+Apply the file once.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~20 seconds (readiness waits 15 seconds, then the probe runs)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f 05-resources/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The containers show the new limits</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc describe pod -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster | grep -A 4 "Limits:"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">    Limits:
+      cpu:     300m
+      memory:  256Mi
+    Requests:
+      cpu:     100m</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="probes"><a class="anchor" href="#probes"></a>2. Watch the probes</h3>
+<div class="paragraph">
+<p><strong>What:</strong> Wait until the readiness probe passes, then confirm both Pods are Ready.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why:</strong> A Pod that fails readiness stays out of the Service. A failed liveness probe restarts the container.</p>
+</div>
+<div class="paragraph">
+<p><span class="icon"><i class="fa fa-clock"></i></span> ~20 seconds</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc get pods -l app=workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: Both Pods show 1/1 Ready</summary>
+<div class="content">
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                            READY   STATUS    RESTARTS   AGE
+workshop-web-6b8d4c9f7a-aaaaa   1/1     Running   0          40s
+workshop-web-6b8d4c9f7a-bbbbb   1/1     Running   0          40s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>If you ran <code>oc get pods</code> in step 1 before 15 seconds, <code>READY</code> was <code>0/1</code>.
+That was the readiness probe waiting. It is the result this lab asks you to see.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_solves_compared_to_lab_4"><a class="anchor" href="#_what_this_solves_compared_to_lab_4"></a>What this solves (compared to Lab 4)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem from Lab 4</th>
+<th class="tableblock halign-left valign-top">How this lab solves it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The scheduler does not know how much CPU this lab wants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The container requests 100m CPU and 128Mi memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Service can send traffic before httpd answers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The readiness probe must pass first</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_this_does_not_solve_yet"><a class="anchor" href="#_what_this_does_not_solve_yet"></a>What this does not solve (yet)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Remaining problem</th>
+<th class="tableblock halign-left valign-top">Addressed in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You still apply YAML by hand. Git is not the source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="06-gitops.html" class="xref page">Lab 6</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_official_documentation"><a class="anchor" href="#_official_documentation"></a>Official documentation</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/nodes/working-with-pods#nodes-pods-configuring_nodes-pods-configuring">Pod resource requests and limits</a></p>
+</li>
+<li>
+<p><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/building_applications/application-health">Application health</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives_considered"><a class="anchor" href="#_alternatives_considered"></a>Alternatives considered</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Approach</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requests, limits, httpGet probes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Chosen. <code>httpGet</code> on <code>/</code> checks that httpd serves the ConfigMap page.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A TCP probe only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proves the port is open. It does not prove that <code>/</code> returns the page.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No limits</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The quota still caps the namespace. One container can still starve another Pod.</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_work"><a class="anchor" href="#_check_your_work"></a>Check your work</h2>
+<div class="sectionbody">
+<div class="sidebarblock verification">
+<div class="content">
+<div class="paragraph">
+<p>Were you able to see 0/1 before the probe passed, and then 1/1 with the limits you set?</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Record your progress after you can answer yes.
+<code>envsubst</code> replaces <code>${WORKSHOP_USER}</code>, <code>${WORKSHOP_NAMESPACE}</code>, and <code>${EXERCISE_ID}</code>.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export EXERCISE_ID=05-resources
+envsubst &lt; instructor/progress-configmap.yaml | oc apply --context cluster -f -</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Verify: The progress record exists</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get configmap progress-05-resources -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                    DATA   AGE
+progress-05-resources   3      5s</code></pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reset"><a class="anchor" href="#_reset"></a>Reset</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Apply the Lab 4 Deployment again.
+That file keeps the ConfigMap and the Secret. It removes the probes and restores the earlier CPU and memory values.
+Wait for the rollout so the old Pods are gone.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f 04-config/deployment.yaml -n "${WORKSHOP_NAMESPACE}" --context cluster
+oc rollout status deployment/workshop-web -n "${WORKSHOP_NAMESPACE}" --context cluster</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="04-config.html">Lab 4 - ConfigMaps and Secrets</a></span>
+  <span class="next"><a href="06-gitops.html">Lab 6 - Argo CD Application</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
