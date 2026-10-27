@@ -233,11 +233,15 @@ Hello from the sidecar
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to see the Pod report 2/2 Ready?
+
+[.success]
+Great. Record your progress below, then continue to Lab 2.
+
+[.fail]
+Review the Pod and sidecar steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

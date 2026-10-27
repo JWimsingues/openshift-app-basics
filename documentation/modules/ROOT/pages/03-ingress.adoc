@@ -144,11 +144,15 @@ workshop-web-student-01.apps.example.com
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to open the Route URL and get HTTP 200?
+
+[.success]
+Great. Record your progress below, then continue to Lab 4.
+
+[.fail]
+Review the Ingress and Route steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

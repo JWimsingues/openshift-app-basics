@@ -193,11 +193,15 @@ TIP: If you change the live Deployment, GitOps changes it back. That is `selfHea
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to see the Application become Synced and Healthy?
+
+[.success]
+Great. Record your progress below. You finished the workshop labs.
+
+[.fail]
+Review the Application and sync steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

@@ -245,11 +245,15 @@ VERSION:  argoproj.io/v1alpha1
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to run oc whoami and see your namespace?
+
+[.success]
+Great. Record your progress below, then continue to Lab 1.
+
+[.fail]
+Review the login and namespace steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

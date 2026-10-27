@@ -1,0 +1,107 @@
+<script src="{{uiRootPath}}/js/vendor/clipboard.js"></script>
+<script src="{{uiRootPath}}/js/site.js"></script>
+<script async src="{{uiRootPath}}/js/vendor/highlight.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  var sidebars = document.querySelectorAll('.sidebarblock.verification')
+  sidebars.forEach(function (sb, idx) {
+    var content = sb.querySelector('.content')
+    if (!content) return
+    var paragraphs = content.querySelectorAll('.paragraph')
+    var question = ''
+    var successMsg = ''
+    var failMsg = ''
+    paragraphs.forEach(function (p) {
+      if (p.classList.contains('success')) {
+        successMsg = p.querySelector('p') ? p.querySelector('p').innerHTML : p.textContent
+      } else if (p.classList.contains('fail')) {
+        failMsg = p.querySelector('p') ? p.querySelector('p').innerHTML : p.textContent
+      } else if (!question) {
+        question = p.querySelector('p') ? p.querySelector('p').innerHTML : p.textContent
+      }
+    })
+    if (!successMsg) successMsg = 'Great, you may continue to the next section.'
+    if (!failMsg) failMsg = 'Review your steps and try again.'
+    var name = 'verify-' + idx
+    var box = document.createElement('div')
+    box.className = 'verification-box'
+    box.innerHTML =
+      '<div class="vb-header">Check your work</div>' +
+      '<div class="vb-body">' +
+        '<div class="vb-question">' + question + '</div>' +
+        '<div class="vb-options">' +
+          '<label><input type="radio" name="' + name + '" value="yes"> Yes</label>' +
+          '<label><input type="radio" name="' + name + '" value="no"> No</label>' +
+        '</div>' +
+        '<div class="vb-feedback success">' + successMsg + '</div>' +
+        '<div class="vb-feedback fail">' + failMsg + '</div>' +
+      '</div>'
+    sb.parentNode.replaceChild(box, sb)
+  })
+
+  var boxes = document.querySelectorAll('.verification-box')
+  if (!boxes.length) return
+
+  var pageKey = (window.location.pathname.match(/\/([^\/]+?)(?:\.html)?$/) || [])[1] || 'page'
+  var navNext =
+    document.querySelector('.pagination .next a') ||
+    document.querySelector('.nav-next a') ||
+    document.querySelector('a.page-next')
+
+  if (navNext) {
+    navNext.style.pointerEvents = 'none'
+    navNext.style.opacity = '0.3'
+  }
+
+  function checkAll () {
+    var allYes = true
+    boxes.forEach(function (box, i) {
+      var selected = box.querySelector('input[type="radio"]:checked')
+      if (!selected || selected.value !== 'yes') allYes = false
+      if (selected) {
+        localStorage.setItem('verify:' + pageKey + ':' + i, selected.value)
+      }
+    })
+    if (navNext) {
+      navNext.style.pointerEvents = allYes ? '' : 'none'
+      navNext.style.opacity = allYes ? '' : '0.3'
+    }
+  }
+
+  boxes.forEach(function (box, i) {
+    var saved = localStorage.getItem('verify:' + pageKey + ':' + i)
+    if (saved) {
+      var radio = box.querySelector('input[value="' + saved + '"]')
+      if (radio) {
+        radio.checked = true
+        var ok = box.querySelector('.vb-feedback.success')
+        var fail = box.querySelector('.vb-feedback.fail')
+        if (saved === 'yes') {
+          ok.style.display = 'block'
+          fail.style.display = 'none'
+        } else {
+          ok.style.display = 'none'
+          fail.style.display = 'block'
+        }
+      }
+    }
+
+    box.querySelectorAll('input[type="radio"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        var ok = box.querySelector('.vb-feedback.success')
+        var fail = box.querySelector('.vb-feedback.fail')
+        if (this.value === 'yes') {
+          ok.style.display = 'block'
+          fail.style.display = 'none'
+        } else {
+          ok.style.display = 'none'
+          fail.style.display = 'block'
+        }
+        checkAll()
+      })
+    })
+  })
+
+  checkAll()
+})
+</script>

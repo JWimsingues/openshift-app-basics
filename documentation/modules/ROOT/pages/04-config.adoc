@@ -140,11 +140,15 @@ WARNING: Do not put a real password in this Secret manifest. The file is in Git 
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to see the ConfigMap heading in the page and keep the token out of that page?
+
+[.success]
+Great. Record your progress below, then continue to Lab 5.
+
+[.fail]
+Review the ConfigMap and Secret steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

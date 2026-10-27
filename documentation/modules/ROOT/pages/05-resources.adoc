@@ -143,11 +143,15 @@ That was the readiness probe waiting. It is the result this lab asks you to see.
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to see 0/1 before the probe passed, and then 1/1 with the limits you set?
+
+[.success]
+Great. Record your progress below, then continue to Lab 6.
+
+[.fail]
+Review the requests, limits, and probe steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

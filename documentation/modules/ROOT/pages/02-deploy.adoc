@@ -179,11 +179,15 @@ workshop-web-7d9c8b6f4d-pqrst   1/1     Running   0          20s
 
 '''
 
-== Check your work
-
 [.verification]
 ****
 Were you able to delete a Pod and still get HTTP 200 from the Service?
+
+[.success]
+Great. Record your progress below, then continue to Lab 3.
+
+[.fail]
+Review the Deployment and Service steps on this page, then try again.
 ****
 
 Record your progress after you can answer yes.

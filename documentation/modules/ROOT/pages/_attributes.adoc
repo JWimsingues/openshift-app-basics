@@ -9,18 +9,67 @@
 
 ++++
 <style>
-.verification {
-  border: 2px solid #3d5a3d;
-  border-radius: 4px;
-  padding: 1rem 1.25rem;
-  margin: 1.5rem 0;
-  background: #f4f8f4;
+/* Hide verification sidebar blocks before JS transforms them */
+.sidebarblock.verification {
+  display: none;
 }
-.verification::before {
-  content: "Check your work";
-  display: block;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+
+/* Verification "Check your work" component */
+.verification-box {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  max-width: 600px;
+}
+
+.verification-box .vb-header {
+  background-color: #3e8635;
+  color: white;
+  font-weight: 600;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.verification-box .vb-body {
+  padding: 16px;
+  background: #fff;
+}
+
+.verification-box .vb-question {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.verification-box .vb-options label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.verification-box .vb-options input[type="radio"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.verification-box .vb-feedback {
+  margin-top: 10px;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: none;
+}
+
+.verification-box .vb-feedback.success {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.verification-box .vb-feedback.fail {
+  background-color: #fce8e6;
+  color: #c5221f;
 }
 </style>
 ++++
